@@ -1,0 +1,4 @@
+(function() {var implementors = {};
+implementors["poa"] = [{"text":"impl&lt;Block:&nbsp;BlockT, AccountId, Balance, __Sr_Api_Error__&gt; RuntimeApiInfo for dyn <a class=\"trait\" href=\"poa/runtime_api/trait.PoAApi.html\" title=\"trait poa::runtime_api::PoAApi\">PoAApi</a>&lt;Block, AccountId, Balance, Error = __Sr_Api_Error__&gt;","synthetic":false,"types":["poa::runtime_api::PoAApi"]}];
+implementors["price_feed"] = [{"text":"impl&lt;Block:&nbsp;BlockT, __Sr_Api_Error__&gt; RuntimeApiInfo for dyn <a class=\"trait\" href=\"price_feed/runtime_api/trait.PriceFeedApi.html\" title=\"trait price_feed::runtime_api::PriceFeedApi\">PriceFeedApi</a>&lt;Block, Error = __Sr_Api_Error__&gt;","synthetic":false,"types":["price_feed::runtime_api::PriceFeedApi"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["forked_pallet_democracy"] = [{"text":"impl&lt;Balance:&nbsp;Saturating&gt; Saturating for <a class=\"struct\" href=\"forked_pallet_democracy/struct.Delegations.html\" title=\"struct forked_pallet_democracy::Delegations\">Delegations</a>&lt;Balance&gt;","synthetic":false,"types":["forked_pallet_democracy::types::Delegations"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["forked_pallet_democracy"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html\" title=\"trait core::cmp::PartialOrd\">PartialOrd</a>&lt;<a class=\"enum\" href=\"forked_pallet_democracy/enum.Conviction.html\" title=\"enum forked_pallet_democracy::Conviction\">Conviction</a>&gt; for <a class=\"enum\" href=\"forked_pallet_democracy/enum.Conviction.html\" title=\"enum forked_pallet_democracy::Conviction\">Conviction</a>","synthetic":false,"types":["forked_pallet_democracy::conviction::Conviction"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

@@ -1,0 +1,1 @@
+window.ALL_CRATES = ["common","core_mods","dock_node","dock_runtime","forked_pallet_democracy","poa","poa_rpc","price_feed","price_feed_rpc","simple_democracy","token_migration"];

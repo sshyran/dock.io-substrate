@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["development_config",""],["local_testnet_config",""],["mainnet_config","Configuration for the mainnet"],["testnet_config",""]],"type":[["ChainSpec","Specialized `ChainSpec`. This is a specialization of the general Substrate ChainSpec type."]]});
