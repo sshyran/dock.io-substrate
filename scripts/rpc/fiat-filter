@@ -1,0 +1,6 @@
+curl http://localhost:9933 -H "Content-Type:application/json;charset=utf-8" -d   '{
+     "jsonrpc":"2.0",
+      "id":1,
+      "method":"get_call_fee_dock",
+      "params": ["0x976fa69e61ec76c3b5b0457a49707ae3873d00a52d40262f485213df4568c7f2"]
+    }'

@@ -29,7 +29,6 @@ pub trait UpdaterDockFiatRate {
 // /// Configure the pallet by specifying the parameters and types on which it depends.
 pub trait Config:
     system::Config + did::Trait + anchor::Trait + blob::Trait + revoke::Trait + attest::Trait
-// + common::PriceProvider
 {
     /// Because this pallet emits events, it depends on the runtime's definition of an event.
     type Event: From<Event<Self>> + Into<<Self as system::Config>::Event>;
@@ -50,6 +49,9 @@ pub trait Config:
         + IsSubType<attest::Call<Self>>;
     /// The module's Currency type definition
     type Currency: Currency<Self::AccountId>;
+
+    // TODO add type Balance to specify that it must impl From<u64>
+    // type Balance: <Self as pallet_balances::Config>::Balance + From<u64>;
 }
 
 // The pallet's runtime storage items.
@@ -143,6 +145,15 @@ decl_module! {
             Self::set_dock_fiat_rate_(new_rate);
             Ok(())
         }
+
+        // /// Get Call fee in µDOCK
+        // #[weight = 0]
+        // pub fn get_call_fee_dock(origin,call:Box<<T as Config>::Call>) -> Result<(),DispatchError> {
+        //     // ensure_root(origin)?;
+        //     // Self::get_call_fee_dock_(&call)
+        //     // Ok(<BalanceOf<T>>::from(8437_u32))
+        //     Ok(())
+        // }
     }
 }
 
@@ -152,7 +163,10 @@ type BalanceOf<T> =
 type AmountUsd = Permill;
 
 // private helper functions
-impl<T: Config> Module<T> {
+impl<T: Config> Module<T>
+// where
+//     BalanceOf<T>: FixedPointOperand,
+{
     fn get_call_fee_fiat_(
         call: &<T as Config>::Call,
     ) -> Result<AmountUsd, DispatchErrorWithPostInfo> {
@@ -194,7 +208,7 @@ impl<T: Config> Module<T> {
         // uses Pays::Yes to prevent spam
         return Err(Error::<T>::UnexpectedCall.into());
     }
-    fn compute_call_fee_dock_(
+    fn get_call_fee_dock_(
         call: &<T as Config>::Call,
     ) -> Result<BalanceOf<T>, DispatchErrorWithPostInfo> {
         use sp_std::convert::TryInto;
@@ -216,6 +230,18 @@ impl<T: Config> Module<T> {
         Ok(fee_microdock)
     }
 
+    // TODO replace gcfd_()
+    /// Compute the fee that would be withdrawn with this extrinsic.
+    /// Doesn't dispatch the extrinsic
+    pub fn get_call_fee_dock2_<Extrinsic: GetDispatchInfo>(
+        unchecked_extrinsic: Extrinsic,
+    ) -> BalanceOf<T>
+    where
+        BalanceOf<T>: From<u64>,
+    {
+        <BalanceOf<T>>::from(3456_u64)
+    }
+
     fn charge_fees_(who: T::AccountId, amount: BalanceOf<T>) -> Result<(), DispatchError> {
         let _ = <T::Currency>::withdraw(
             &who,
@@ -232,7 +258,7 @@ impl<T: Config> Module<T> {
         let sender = ensure_signed(origin.clone())?;
 
         // calculate fee based on type of call
-        let fee_dock = Self::compute_call_fee_dock_(&call)?;
+        let fee_dock = Self::get_call_fee_dock_(&call)?;
         // deduct fees based on Currency::Withdraw
         Self::charge_fees_(sender, fee_dock)?;
 

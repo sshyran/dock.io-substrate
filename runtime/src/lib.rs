@@ -696,7 +696,7 @@ construct_runtime!(
         Ethereum: pallet_ethereum::{Module, Call, Storage, Event, Config, ValidateUnsigned},
         EVM: pallet_evm::{Module, Config, Call, Storage, Event<T>},
         PriceFeedModule: price_feed::{Module, Call, Storage, Event, Config},
-        FiatFilter: fiat_filter::{Module, Call, Storage, Event<T>},
+        FiatFilterModule: fiat_filter::{Module, Call, Storage, Event<T>},
     }
 );
 
@@ -1012,6 +1012,16 @@ impl_runtime_apis! {
 
         fn token_usd_price_from_contract() -> Option<u32> {
             PriceFeedModule::get_price_from_contract().map_or(None, |(v, _)| Some(v))
+        }
+    }
+
+    impl fiat_filter_rpc_runtime_api::FiatFeeRuntimeApi<Block,Balance> for Runtime {
+        fn get_call_fee_dock(uxt: <Block as BlockT>::Extrinsic) -> Balance {
+            // TODO if call IS fiat_filter use fiat pricing, convert to DOCK
+            FiatFilterModule::get_call_fee_dock2_(uxt); // TODO update for real fn
+            // FiatFilterModule::hello();
+            // TODO actually return
+            987_u64
         }
     }
 
