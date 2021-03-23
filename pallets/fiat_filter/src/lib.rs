@@ -145,15 +145,6 @@ decl_module! {
             Self::set_dock_fiat_rate_(new_rate);
             Ok(())
         }
-
-        // /// Get Call fee in µDOCK
-        // #[weight = 0]
-        // pub fn get_call_fee_dock(origin,call:Box<<T as Config>::Call>) -> Result<(),DispatchError> {
-        //     // ensure_root(origin)?;
-        //     // Self::get_call_fee_dock_(&call)
-        //     // Ok(<BalanceOf<T>>::from(8437_u32))
-        //     Ok(())
-        // }
     }
 }
 
@@ -162,11 +153,8 @@ type BalanceOf<T> =
 
 type AmountUsd = Permill;
 
-// private helper functions
-impl<T: Config> Module<T>
-// where
-//     BalanceOf<T>: FixedPointOperand,
-{
+/// Non-dispatchable helper functions
+impl<T: Config> Module<T> {
     fn get_call_fee_fiat_(
         call: &<T as Config>::Call,
     ) -> Result<AmountUsd, DispatchErrorWithPostInfo> {
@@ -208,7 +196,7 @@ impl<T: Config> Module<T>
         // uses Pays::Yes to prevent spam
         return Err(Error::<T>::UnexpectedCall.into());
     }
-    fn get_call_fee_dock_(
+    pub fn get_call_fee_dock_(
         call: &<T as Config>::Call,
     ) -> Result<BalanceOf<T>, DispatchErrorWithPostInfo> {
         use sp_std::convert::TryInto;
@@ -225,21 +213,9 @@ impl<T: Config> Module<T>
 
         // The token has 6 decimal places (defined in the runtime)
         // pub const DOCK: Balance = 1_000_000;
-        // T::Balance is already expressed in DOCK_Permill or microdock
+        // T::Balance is already expressed in µDOCK (as u64)
         let fee_microdock = <BalanceOf<T>>::from(fee_dock_permill_u32);
         Ok(fee_microdock)
-    }
-
-    // TODO replace gcfd_()
-    /// Compute the fee that would be withdrawn with this extrinsic.
-    /// Doesn't dispatch the extrinsic
-    pub fn get_call_fee_dock2_<Extrinsic: GetDispatchInfo>(
-        unchecked_extrinsic: Extrinsic,
-    ) -> BalanceOf<T>
-    where
-        BalanceOf<T>: From<u64>,
-    {
-        <BalanceOf<T>>::from(3456_u64)
     }
 
     fn charge_fees_(who: T::AccountId, amount: BalanceOf<T>) -> Result<(), DispatchError> {

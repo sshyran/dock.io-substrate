@@ -13,11 +13,10 @@ use std::sync::Arc;
 
 pub use fiat_filter_rpc_runtime_api::FiatFeeRuntimeApi;
 
-// TODO: rpc method that accepts a scale-encoded call
-// returns fee in fiat usd_cent as u32
 #[rpc]
 pub trait FiatFeeApi<Balance> {
-    #[rpc(name = "get_call_fee_dock")]
+    /// Accepts a scale-encoded extrinsic, returns fee in µDOCK as Balance (u64)
+    #[rpc(name = "fiat_filter_getCallFeeDock")]
     fn get_call_fee_dock(&self, encoded_xt: Bytes) -> Result<Balance>;
 }
 
@@ -27,12 +26,15 @@ pub enum FiatFeeRpcError {
     DecodeError,
     /// The call to runtime failed.
     RuntimeError,
+    /// The call succeeded but the function called returned an error
+    GetCallFeeDock,
 }
 impl From<FiatFeeRpcError> for i64 {
     fn from(e: FiatFeeRpcError) -> i64 {
         match e {
             FiatFeeRpcError::RuntimeError => 1,
             FiatFeeRpcError::DecodeError => 2,
+            FiatFeeRpcError::GetCallFeeDock => 3,
         }
     }
 }
@@ -43,7 +45,6 @@ pub struct FiatFeeServer<Client, Block> {
     _marker_block: std::marker::PhantomData<Block>,
 }
 impl<Client, Block> FiatFeeServer<Client, Block> {
-    /// Create new `SumStorage` instance with the given reference to the client.
     pub fn new(client: Arc<Client>) -> Self {
         Self {
             client,
@@ -56,10 +57,8 @@ where
     Block: BlockT,
     Client: Send + Sync + 'static + ProvideRuntimeApi<Block> + HeaderBackend<Block>,
     Client::Api: FiatFeeRuntimeApi<Block, Balance>,
-    Balance: Codec + MaybeDisplay + Copy + TryInto<NumberOrHex>,
-    // Call: Parameter,
+    Balance: Codec + MaybeDisplay,
 {
-    // -> Result<RuntimeDispatchInfo<Balance>>
     fn get_call_fee_dock(&self, encoded_xt: Bytes) -> Result<Balance> {
         let api = self.client.runtime_api();
         // automatically pick the latest/best block
@@ -68,24 +67,22 @@ where
         // decode extrinsic
         let uxt: Block::Extrinsic = Decode::decode(&mut &*encoded_xt).map_err(|e| RpcError {
             code: ErrorCode::ServerError(FiatFeeRpcError::DecodeError.into()),
-            message: "Unable to query dispatch info.".into(),
+            message: "Failed to decode request".into(),
             data: Some(format!("{:?}", e).into()),
         })?;
 
         // call runtime api method get_call_fee_dock()
-        api.get_call_fee_dock(&at, uxt).map_err(|e| RpcError {
-            code: ErrorCode::ServerError(FiatFeeRpcError::RuntimeError.into()),
-            message: "Unable to query dispatch info.".into(),
-            data: Some(format!("{:?}", e).into()),
-        })
+        match api.get_call_fee_dock(&at, uxt) {
+            Ok(rlt) => rlt.map_err(|e| RpcError {
+                code: ErrorCode::ServerError(FiatFeeRpcError::GetCallFeeDock.into()),
+                message: "Failed calling get_call_fee_dock".into(),
+                data: Some(format!("{:?}", e).into()),
+            }),
+            Err(e) => Err(RpcError {
+                code: ErrorCode::ServerError(FiatFeeRpcError::RuntimeError.into()),
+                message: "Failed calling get_call_fee_dock".into(),
+                data: Some(format!("{:?}", e).into()),
+            }),
+        }
     }
-
-    // fn get_call_fee_dock(&self, call: Call) -> Result<u32> {
-    //     let api = self.client.runtime_api();
-    //     // automatically pick the latest/best block
-    //     let at = BlockId::<Block>::hash(self.client.info().best_hash);
-
-    //     // TODO actually call runtime api method
-    //     Ok(7)
-    // }
 }

@@ -1016,12 +1016,10 @@ impl_runtime_apis! {
     }
 
     impl fiat_filter_rpc_runtime_api::FiatFeeRuntimeApi<Block,Balance> for Runtime {
-        fn get_call_fee_dock(uxt: <Block as BlockT>::Extrinsic) -> Balance {
-            // TODO if call IS fiat_filter use fiat pricing, convert to DOCK
-            FiatFilterModule::get_call_fee_dock2_(uxt); // TODO update for real fn
-            // FiatFilterModule::hello();
-            // TODO actually return
-            987_u64
+        fn get_call_fee_dock(uxt: <Block as BlockT>::Extrinsic) -> Result<Balance,fiat_filter_rpc_runtime_api::Error> {
+            FiatFilterModule::get_call_fee_dock_(&uxt.function).map_err(|e|
+                fiat_filter_rpc_runtime_api::Error::new_getcallfeedock(e.error)
+            )
         }
     }
 

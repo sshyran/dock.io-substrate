@@ -1,6 +1,7 @@
+# param extrinsic (0x9101040...) is a call to did::new()
 curl http://localhost:9933 -H "Content-Type:application/json;charset=utf-8" -d   '{
      "jsonrpc":"2.0",
       "id":1,
-      "method":"get_call_fee_dock",
-      "params": ["0x976fa69e61ec76c3b5b0457a49707ae3873d00a52d40262f485213df4568c7f2"]
+      "method":"fiat_filter_getCallFeeDock",
+      "params": ["0x9101040b003f502fca6346b4b52adb8083e873b6969b2f47ee5f7a21e07ffef9101b6f997b3f502fca6346b4b52adb8083e873b6969b2f47ee5f7a21e07ffef9101b6f997b00c29f5938f6656b0399a5a118adef8fe8c9df9b14a4e01544157746e06be37248"]
     }'
