@@ -1262,7 +1262,7 @@ dependencies = [
 
 [[package]]
 name = "dock-node"
-version = "0.12.3"
+version = "0.13.0"
 dependencies = [
  "dock-runtime",
  "fc-consensus",
@@ -1317,7 +1317,7 @@ dependencies = [
 
 [[package]]
 name = "dock-runtime"
-version = "0.12.3"
+version = "0.13.0"
 dependencies = [
  "common",
  "core_mods",
@@ -1337,6 +1337,8 @@ dependencies = [
  "pallet-collective",
  "pallet-ethereum",
  "pallet-evm",
+ "pallet-evm-precompile-sha3fips",
+ "pallet-evm-precompile-simple",
  "pallet-grandpa",
  "pallet-membership",
  "pallet-randomness-collective-flip",
@@ -4264,6 +4266,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-evm-precompile-sha3fips"
+version = "3.0.0"
+source = "git+https://github.com/paritytech/frontier.git?rev=da8f7ba3b5222743322616891c2022749decf786#da8f7ba3b5222743322616891c2022749decf786"
+dependencies = [
+ "evm",
+ "fp-evm",
+ "sp-core",
+ "sp-io",
+ "tiny-keccak",
+]
+
+[[package]]
+name = "pallet-evm-precompile-simple"
+version = "3.0.0"
+source = "git+https://github.com/paritytech/frontier.git?rev=da8f7ba3b5222743322616891c2022749decf786#da8f7ba3b5222743322616891c2022749decf786"
+dependencies = [
+ "evm",
+ "fp-evm",
+ "ripemd160",
+ "sp-core",
+ "sp-io",
+]
+
+[[package]]
 name = "pallet-grandpa"
 version = "3.0.0"
 source = "git+https://github.com/paritytech/substrate.git?branch=frontier#39b31316815ec6d709e7ad7c1a31c436d14c53e6"
@@ -5493,6 +5519,17 @@ dependencies = [
  "untrusted",
  "web-sys",
  "winapi 0.3.9",
+]
+
+[[package]]
+name = "ripemd160"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2eca4ecc81b7f313189bf73ce724400a07da2a6dac19588b03c8bd76a2dcc251"
+dependencies = [
+ "block-buffer 0.9.0",
+ "digest 0.9.0",
+ "opaque-debug 0.3.0",
 ]
 
 [[package]]
@@ -8375,7 +8412,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04f8ab788026715fa63b31960869617cba39117e520eb415b0139543e325ab59"
 dependencies = [
  "cfg-if 0.1.10",
- "rand 0.7.3",
+ "rand 0.3.23",
  "static_assertions",
 ]
 
